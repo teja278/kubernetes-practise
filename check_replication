@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ $# -lt 3 ]; then
+  echo 1>&2 "$0: not enough arguments. Please run the script by passing the two arguments - KAFKA_BROKER_HOST and KAFKA_BIN_PATH"
+  echo "Eg Usage: check_replication "--zookeper localhost:2181" /usr/kafka/bin/"
+  exit 2
+fi
+KAFKA_BROKER_HOST=$1
+KAFKA_BIN_PATH=$2
+count=$(.$KAFKA_BIN_PATH/kafka-topics --describe $KAFKA_BROKER_HOST --under-replicated-partitions | wc -l)
+if [ $count -eq 0 ]; then
+  echo "OK - Kafka topics replication is okay"
+else
+  echo "CRITICAL - Kafka topics are not being replicated"
+fi

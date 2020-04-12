@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-standalone
+spec:
+  selector:
+    component: mysql-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-standalone
+spec:
+  selector:
+    matchLabels:
+      component: mysql-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: mysql-db
+    spec:
+      containers:
+        - name: mysql-standalone
+          image: mysql:5.6
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+            - name: MYSQL_DATABASE
+              value: test
+            - name: MYSQL_USER
+              value: sa
+            - name: MYSQL_PASSWORD
+              value: password
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
