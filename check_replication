@@ -8,7 +8,7 @@ KAFKA_BROKER_HOST=$1
 KAFKA_BIN_PATH=$2
 count=$(.$KAFKA_BIN_PATH/kafka-topics --describe $KAFKA_BROKER_HOST --under-replicated-partitions | wc -l)
 if [ $count -eq 0 ]; then
-  echo "OK - Kafka topics replication is okay"
+  echo "OK - Kafka topics replication is okay."
 else
   echo "CRITICAL - Kafka topics are not being replicated"
 fi
